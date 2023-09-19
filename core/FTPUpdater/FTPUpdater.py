@@ -89,6 +89,9 @@ class FTPUpdater:
         entry["month"]=entry["modify"][4:6]
         entry["day"]=entry["modify"][6:8]
         entry["hour"]=int(entry["modify"][8:10])+configPico.ftpUpdate["UTCcorrection"]
+        if(int(entry["hour"])>23):
+            entry["hour"]-=24
+            entry["day"]=int(entry["day"])+1
         entry["minute"]=entry["modify"][10:12]
         return entry
     
@@ -108,7 +111,7 @@ class FTPUpdater:
                         self.logger.log("NEED UPDATE FILE:"+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  >>  "+Date.niceDateFromDat(datL))
                         if(not (file["name"] in configPico.ftpUpdate["ignoreFTPFiles"])):
                             if(self.writeToPico):
-                                self.logger.print("Download file: "+file["path"]+"/"+file["name"])
+                                self.logger.log("Download file: "+file["path"]+"/"+file["name"])
                                 handle = self.filesystem.openBinaryFile(file["path"].rstrip("/") + "/" + file["name"].lstrip("/"), 'wb')
                                 self.ftp.cwd(file["path"])
                                 self.ftp.retrbinary('RETR %s' % file["name"], handle.write)
@@ -117,7 +120,7 @@ class FTPUpdater:
                         else:
                             self.logger.log("Ignore ftp file:"+file["name"])
                     else:
-                        self.logger.print("File no need update: "+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  <<  "+Date.niceDateFromDat(datL))
+                        self.logger.log("File no need update: "+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  <<  "+Date.niceDateFromDat(datL))
                         filesLocal.remove(file["name"])
                     
         for file in fFtp:
