@@ -15,6 +15,6 @@ if __name__ == "__main__":
         time.sleep(3)
         print(nic.ifconfig())
     ftpUpdater = FTPUpdater(nic)
-    ftpUpdater.forceUpdateServer=True
-    configPico.ftpUpdate["writeToServer"]=True
+    ftpUpdater.forceUpdatePico=True
+    configPico.ftpUpdate["writeToPico"]=True
     ftpUpdater.Update()
