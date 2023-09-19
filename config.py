@@ -13,3 +13,6 @@ class configPico:
         "ignoreFTPDir":list({"//temp","//utils","//.git"}),
         "UTCcorrection":3
         }
+    Network={
+        "EthernetHostName":"EtherPico"
+        }

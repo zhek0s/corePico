@@ -1,5 +1,5 @@
-import network
 import time
+from core.Ethernet.Ethernet import Ethernet
 from umqtt.simple import MQTTClient
 from machine import Pin,SPI,I2C
 import json
@@ -14,11 +14,9 @@ th06=TH06(i2cHandler)
 display=Display(i2cHandler)
 buttons= Buttons()
 
-spi=SPI(0,2_000_000, mosi=Pin(19),miso=Pin(16),sck=Pin(18))
-nic = network.WIZNET5K(spi,Pin(17),Pin(20))
-print('Start')
-print('Getting ip')
-nic.active(True) 
+ethernet=Ethernet()
+ethernet.activate()
+nic=ethernet.getHandler()
 time.sleep(3)
 print(nic.ifconfig())
 print('Try to connect mqtt server')
