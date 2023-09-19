@@ -90,7 +90,7 @@ class FTPUpdater:
                 if(file["name"]==fileL["name"]):
                     dat={"hour":file["hour"],"minute":file["minute"],"year":file["year"],"month":file["month"],"date":file["day"]}
                     datL={"hour":fileL["hour"],"minute":fileL["minute"],"year":fileL["year"],"month":fileL["month"],"date":fileL["day"]}
-                    if(Date.biggerDate(dat,datL) or forceUpdatePico):
+                    if(Date.biggerDate(dat,datL) or self.forceUpdatePico):
                         print("NEED UPDATE FILE:"+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  >>  "+Date.niceDateFromDat(datL))
                         if(not (file["name"] in configPico.ftpUpdate["ignoreFTPFiles"])):
                             if(configPico.ftpUpdate["writeToPico"]):
@@ -120,7 +120,7 @@ class FTPUpdater:
                 self.ftp.mkd(d["name"])
                 self.ftp.cwd("/")
         for file in fFtp:
-            if((configPico.ftpUpdate["writeToPico"]) and (not (file["name"] in filesFtp))) or forceUpdatePico:
+            if((configPico.ftpUpdate["writeToPico"]) and (not (file["name"] in filesFtp))) or self.forceUpdatePico:
                 if(not (file["name"] in configPico.ftpUpdate["ignoreFTPFiles"])):
                    print("Download file: "+file["path"]+"/"+file["name"])
                    handle = self.filesystem.openBinaryFile(file["path"].rstrip("/") + "/" + file["name"].lstrip("/"), 'wb')
@@ -130,28 +130,14 @@ class FTPUpdater:
                     print("Ignore ftp file:"+file["name"])
 
         for file in fLocal:
-            if (not (file["name"] in filesLocal)) or forceUpdateServer:
+            if (not (file["name"] in filesLocal)) or self.forceUpdateServer:
                 print("File found only on Pico: "+file["path"]+"/"+file["name"])
-                if(configPico.ftpUpdate["writeToServer"]):
-                    f=self.filesystem.openBinaryFile(file["path"]+"/"+file["name"],'rb')
-                    self.ftp.cwd(file["path"])
-                    self.ftp.storbinary("STOR "+file["name"], f)
-                    f.close()
-
-
-# Driver code
-if __name__ == "__main__":
-    from machine import Pin, I2C, SPI
-    import network
-    import time
-    spi=SPI(0,2_000_000, mosi=Pin(19),miso=Pin(16),sck=Pin(18))
-    nic = network.WIZNET5K(spi,Pin(17),Pin(20))
-    print('Start')
-    print('Getting ip')
-    nic.active(True) 
-    if configPico.ftpUpdate["ftpWork"]:
-        time.sleep(3)
-        print(nic.ifconfig())
-    ftpUpdater = FTPUpdater(nic)
-    ftpUpdater.forceUpdateServer=true
-    ftpUpdater.Update()
+                if(configPico.ftpUpdate["writeToServer"] or self.forceUpdateServer):
+                    if(not (file["name"] in configPico.ftpUpdate["ignoreLocalFiles"])):
+                        f=self.filesystem.openBinaryFile(file["path"]+"/"+file["name"],'rb')
+                        self.ftp.cwd(file["path"])
+                        self.ftp.delete(file["name"])
+                        self.ftp.storbinary("STOR "+file["name"], f)
+                        f.close()
+                    else:
+                        print("Ignoring "+file["name"])

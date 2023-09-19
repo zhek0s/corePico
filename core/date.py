@@ -125,21 +125,22 @@ class Date:
         return dat[0],dat[1]
     
     def biggerDate(dat,datL):
-        if(int(dat["year"])<int(datL["year"])):
-            return False
-            if(int(dat["month"])<int(datL["month"])):
-                return False
-            else:
-                if(int(dat["date"])<int(datL["date"])):
-                    return False
-                else:
-                    if(int(dat["hour"])<int(datL["hour"])):
-                        return False
-                    else:
-                        if(int(dat["minute"])<=int(datL["minute"])):
-                            return False
-                        else:
+        if(int(dat["year"])>int(datL["year"])):
+            return True
+        elif(int(dat["year"])==int(datL["year"])):
+            if(int(dat["month"])>int(datL["month"])):
+                return True
+            elif(int(dat["month"])==int(datL["month"])):
+                if(int(dat["date"])>int(datL["date"])):
+                    return True
+                elif(int(dat["date"])==int(datL["date"])):
+                    if(int(dat["hour"])>int(datL["hour"])):
+                        return True
+                    elif(int(dat["hour"])==int(datL["hour"])):
+                        if(int(dat["minute"])>int(datL["minute"])):
                             return True
+                        else:
+                            return False
     
     def niceDateFromDat(dat):
         ans="Time: "
