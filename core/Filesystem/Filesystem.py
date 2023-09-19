@@ -5,6 +5,10 @@ class Filesystem:
     allLocalfiles=list()
     allLocaldir=list()
     FILE_CODE = 0x8000
+    logger=[]
+    
+    def __init__(self,debugLogger):
+        self.logger=debugLogger    
     
     def openBinaryFile(self,fileName,arg):
         if(self.file_or_dir_exists(fileName)):
@@ -16,7 +20,7 @@ class Filesystem:
                 createdPath+=path[i]
                 if(not (self.file_or_dir_exists(createdPath))):
                     os.mkdir(createdPath)
-                    print("Created directory: "+createdPath)
+                    self.logger.Log("Created directory: "+createdPath)
                 createdPath+="/"
             f=open(fileName,"w")
             f.close()
@@ -31,15 +35,15 @@ class Filesystem:
     
     def getLocalFilesystem(self):
         self.openLocalDir("/")
-        print("------------")
-        print("LOCAL FILES")
-        print("------------")
+        self.logger.print("------------")
+        self.logger.print("LOCAL FILES")
+        self.logger.print("------------")
         for f in self.allLocalfiles:
-            print(f)
-        print("!!!dir!!!")
+            self.logger.print(f)
+        self.logger.print("!!!dir!!!")
         for d in self.allLocaldir:
-            print(d)
-        print("---------")
+            self.logger.print(d)
+        self.logger.print("---------")
         return self.allLocalfiles,self.allLocaldir
 
     def openLocalDir(self,dir):
@@ -53,7 +57,7 @@ class Filesystem:
                 picoFile["name"]=f
                 picoFile["path"]=dir
                 picoFile.update(timeDat)
-                print(picoFile)
+                self.logger.print(picoFile)
                 self.allLocalfiles.append(picoFile)
             else:
                 self.allLocaldir.append({"type":"d", "name":f, "path":dir})
