@@ -129,8 +129,9 @@ class FTP:
     welcome = None
     passive = False
     encoding = "latin-1"
+    logger=[]
 
-    def __init__(self, host=None, port=None, user=None, passwd=None, acct=None,
+    def __init__(self, debugLogger, host=None, port=None, user=None, passwd=None, acct=None,
                  timeout=_GLOBAL_DEFAULT_TIMEOUT, source_address=None):
         """Initialization method (called by class instantiation).
         See class docstring for supported arguments.
@@ -138,6 +139,7 @@ class FTP:
         # These two settings are not tied to the connection, so if they are
         # given, we override the defaults, regardless of whether an initial
         # host to conenct to has been given or not.
+        self.logger=debugLogger
         if timeout is not None:
             self.timeout = timeout
         if source_address:
@@ -241,7 +243,7 @@ class FTP:
     def getresp(self):
         resp = self.getmultiline()
         self.lastresp = resp[:3]
-        print(resp)
+        self.logger.print(resp)
         if resp[:1] in ('1', '2', '3'):
             return resp
         raise Error(resp)
@@ -271,7 +273,7 @@ class FTP:
 
     def sendcmd(self, cmd):
         """Send a command and return the response."""
-        print(">>Sending to FTP cmd: "+cmd)
+        self.logger.print(">>Sending to FTP cmd: "+cmd)
         self.sock.sendall(cmd.encode(self.encoding) + CRLF)
         return self.getresp()
 
@@ -407,7 +409,7 @@ class FTP:
                 # 1xx or error messages for LIST), so we just discard
                 # this response.
                 if resp[0] == '2':
-                    print("no need 200 get")
+                    self.logger.print("no need 200 get")
                     resp = self.getresp()
 
                 if resp[0] != '1':
@@ -745,5 +747,5 @@ def parse257(resp):
                 break
             i = i+1
         dirname = dirname + c
-    print(dirname)
+    self.logger.print(dirname)
     return dirname
