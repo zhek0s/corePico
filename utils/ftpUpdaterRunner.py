@@ -16,7 +16,7 @@ if __name__ == "__main__":
         time.sleep(3)
         print(nic.ifconfig())
     logger=Debug()
-    logger.enablePrintConsole=False
+    logger.enablePrintConsole=True
     logger.logText="ftpUpdateRunner"
     logger.warningText="ftpUpdateRunner"
     logger.errorText="ftpUpdateRunner"
@@ -24,4 +24,6 @@ if __name__ == "__main__":
     ftpUpdater.writeToPico=True
     ftpUpdater.writeToServer=False
     ftpUpdater.Update()
+    time.sleep(5)
+    machine.reset()
 
