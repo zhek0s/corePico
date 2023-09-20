@@ -20,7 +20,7 @@ class Filesystem:
                 createdPath+=path[i]
                 if(not (self.file_or_dir_exists(createdPath))):
                     os.mkdir(createdPath)
-                    self.logger.Log("Created directory: "+createdPath)
+                    self.logger.log("Created directory: "+createdPath)
                 createdPath+="/"
             f=open(fileName,"w")
             f.close()

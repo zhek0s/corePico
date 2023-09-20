@@ -18,28 +18,28 @@ class Debug:
                 print(self.printText)
             print(text)
         for callback in self.printCallback:
-            callback(text)
+            callback(self.printText,text)
     
     def log(self,text):
         print()
         print(self.logText+" LOG:")
         print(text)
         for callback in self.logCallback:
-            callback(text)
+            callback(self.logText,text)
         
     def warning(self,text):
         print()
         print(self.warningText+" WARNING:")
         print(text)
         for callback in self.warningCallback:
-            callback(text)
+            callback(self.warningText,text)
         
     def error(self,text):
         print()
         print(self.errorText+" ERROR:")
         print(text)
         for callback in self.errorCallback:
-            callback(text)
+            callback(self.errorText,text)
         
     def addPrintCallback(self,func):
         self.printCallback.append(func)
