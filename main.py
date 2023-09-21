@@ -1,7 +1,7 @@
 import time
 import json
 from machine import Pin,SPI,I2C
-from config import configPico
+from config import ConfigPico
 
 from core.Ethernet.Ethernet import Ethernet
 from core.StateMachine.StateMachineRunner import StateMachineRunner
@@ -35,8 +35,8 @@ logger.warningText="StateMachine"
 logger.errorText="StateMachine"
 stateMachine=StateMachineRunner(logger)
 
-state=configPico.StateMachine["startUpState"]
-stateClass=configPico.StateMachineStates[state]
+state=ConfigPico.StateMachine["startUpState"]
+stateClass=ConfigPico.StateMachineStates[state]
 testState=stateClass(display.getHandler())
 stateMachine.setState(testState)
 

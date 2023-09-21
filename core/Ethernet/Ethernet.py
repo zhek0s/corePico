@@ -1,7 +1,7 @@
 import network
 from machine import Pin,SPI,I2C
 from core.Ethernet.w5500PinConfig import W5500PinConfig
-from config import configPico
+from config import ConfigPico
 
 class Ethernet:
     nic=[]

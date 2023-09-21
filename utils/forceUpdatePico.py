@@ -3,7 +3,7 @@ if __name__ == "__main__":
     from machine import Pin, I2C, SPI
     import network
     import time
-    from config import configPico
+    from config import ConfigPico
     from core.FTPUpdater.FTPUpdater import FTPUpdater
     from core.Debug import Debug
     
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     print('Start')
     print('Getting ip')
     nic.active(True) 
-    if configPico.ftpUpdate["ftpWork"]:
+    if ConfigPico.ftpUpdate["ftpWork"]:
         time.sleep(3)
         print(nic.ifconfig())
     logger=Debug()
