@@ -115,6 +115,7 @@ class FTPUpdater:
                                 handle = self.filesystem.openBinaryFile(file["path"].rstrip("/") + "/" + file["name"].lstrip("/"), 'wb')
                                 self.ftp.cwd(file["path"])
                                 self.ftp.retrbinary('RETR %s' % file["name"], handle.write)
+                                handle.close()
                             else:
                                 self.logger.warning("Updating pico disable!")
                         else:
