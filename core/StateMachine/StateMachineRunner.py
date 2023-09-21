@@ -9,9 +9,9 @@ class StateMachineRunner:
 
     lastTimeRunning=0
     lastTimeDrawing=0
-    lock60fps=False
+    lock60fps=True
     drawingFreq=60
-    drawingDelay=1000/60
+    drawingDelay=1000/drawingFreq
     
     def __init__(self,debugLogger):
         self.logger=debugLogger
@@ -33,11 +33,13 @@ class StateMachineRunner:
 
     def Update(self):
         if(self.running):
+            dt=time.ticks_diff(time.ticks_ms(), self.lastTimeRunning)
             self.state.Update(time.ticks_diff(time.ticks_ms(), self.lastTimeRunning))
             self.lastTimeRunning=time.ticks_ms()
-            if(self.lock60fps and time.ticks_diff(time.ticks_ms(), self.lastTimeDrawing)>self.drawingDelay):
-                self.state.Draw()
-                self.lastTimeDrawing=time.ticks_ms()
+            if(self.lock60fps):
+                if(time.ticks_diff(time.ticks_ms(), self.lastTimeDrawing)>self.drawingDelay):
+                    self.lastTimeDrawing=time.ticks_ms()
+                    self.state.Draw()
             else:
                 self.state.Draw()
 
