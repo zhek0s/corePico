@@ -1,15 +1,7 @@
-"""Importing states for dict"""
-from core.StateMachine.States.TestState import TestState
-from core.StateMachine.States.BootState import BootState
-
 class ConfigPico:
     """Class boot and init configs"""
     StateMachine={
         "startUpState":"BootState" # type: ignore
-    }
-    StateMachineStates={
-        "TestState":TestState, # type: ignore
-        "BootState":BootState # type: ignore
     }
     ftpUpdate={
         "ftpWork":True, # type: ignore
