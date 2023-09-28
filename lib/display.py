@@ -2,6 +2,7 @@ from ssd1306 import SSD1306_I2C
 import framebuf
 
 class Display(SSD1306_I2C):
+    MAXIMUM_CHARS_ON_LINE=16
 
     def __init__(self, i2cHandler):
         WIDTH  = 128

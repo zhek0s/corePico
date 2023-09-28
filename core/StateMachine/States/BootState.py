@@ -4,6 +4,7 @@ from machine import Timer
 from config import ConfigPico
 from core.Debug import Debug
 from core.FTPUpdater.FTPUpdater import FTPUpdater
+from core.MQTTRunner.MQTTRunner import MQTTRunner
 from core.StateMachine.AbstractState import State
 from core.StateMachine.commonUI import CommonUI
 from core.CoreVersion import Versions
@@ -30,6 +31,10 @@ class BootState(State):
     needDoneFTPUpdater=ConfigPico.ftpUpdate["ftpWork"]
     logFTPUpdater=["Started"]
     ftpUpdaterStage=0
+
+    mqtt: MQTTRunner
+    needConnectMQTT=ConfigPico.MQTT["mqttWork"]
+    isInitMQTT=False
 
     def __init__(self,display):
         super().__init__("BootState",display)
@@ -69,6 +74,8 @@ class BootState(State):
             self.logicStageEthernet()
         elif self.bootStage==3:
             self.logicStageFTPUpdater()
+        elif self.bootStage==4:
+            self.logicStageMQTTInit()
         else:
             if(self.bootStageChanged):
                 self.bootStageChanged=False
@@ -84,6 +91,9 @@ class BootState(State):
         elif self.bootStage==3:
             self.display.textAligned(self.drawingTextLine1,"C",64,45)
             self.display.textAligned(self.logFTPUpdater[-1],"C",64,55)
+        elif self.bootStage==4:
+            self.display.textAligned(self.drawingTextLine1,"C",64,45)
+            self.display.textAligned(self.drawingTextLine2,"C",64,55)
         else:
             self.display.textAligned("not set stage","C",64,56)
 
@@ -165,5 +175,35 @@ class BootState(State):
             self.logFTPUpdater.append("Done")
             self.Draw()
             self.ftpUpdater.ftp.quit()
+            self.ftpUpdater=[]
             self.tim = Timer(period=3000, mode=Timer.ONE_SHOT, callback=lambda t:self.stageChangerCallback(4))
         self.ftpUpdaterStage+=1
+
+##########  MQTT Init
+    def logicStageMQTTInit(self):
+        if(self.bootStageChanged):
+                self.drawingTextLine1="MQTT"
+                self.drawingTextLine2="Init"
+                if self.needConnectMQTT:
+                    self.tim = Timer(period=1000, mode=Timer.ONE_SHOT, callback=lambda t:self.initMQTT())
+                else:
+                    self.tim = Timer(period=2000, mode=Timer.ONE_SHOT, callback=lambda t:self.stageChangerCallback(5))
+                    self.drawingTextLine2="Aborted"
+                self.bootStageChanged=False
+        else:
+            if self.isInitMQTT and self.needConnectMQTT:
+                self.mqtt.update()
+                time.sleep_ms(10)
+            else:
+                time.sleep_ms(1)
+
+    def initMQTT(self):
+        self.isInitMQTT=True
+        logger=Debug()
+        logger.enablePrintConsole=True
+        logger.logText="MQTTRunner"
+        logger.warningText="MQTTRunner"
+        logger.errorText="MQTTRunner"
+        self.mqtt = MQTTRunner(logger)
+        self.mqtt.publish("hello")
+        self.mqtt.subscribe()

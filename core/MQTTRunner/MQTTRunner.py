@@ -1,9 +1,76 @@
-# print('Try to connect mqtt server')
+import time
+from config import ConfigPico
+from core.Debug import Debug
+from core.MQTTRunner.MQTTClient import MQTTClient
 
-# #mqtt config
-# mqtt_server = '192.168.0.120'
-# client_id = 'pico_with_temp'
-# topic_pub = 'mainController'
+class MQTTRunner:
+
+    logger: Debug
+    client: MQTTClient
+
+    mqtt_server=""
+    client_id=""
+    port=0
+    keepalive=0
+    last_message = 0
+    message_interval = 5
+    counter = 0
+
+    topic_pub=""
+    topic_sub=""
+    callback=None
+
+    def __init__(self,debugLogger):
+        self.logger = debugLogger
+        self.logger.print('Try to connect mqtt server')
+        # #mqtt config
+        self.mqtt_server = ConfigPico.MQTT["mqtt_server"]
+        self.client_id=ConfigPico.MQTT["client_id"]
+        self.topic_pub=ConfigPico.MQTT["topic_pub"]
+        self.topic_sub=ConfigPico.MQTT["topic_sub"]
+        self.port=ConfigPico.MQTT["port"]
+        self.keepalive=ConfigPico.MQTT["keepalive"]
+        try:
+            self.client=self.mqtt_connect()
+        except OSError as e:
+            self.reconnect()
+
+    def mqtt_connect(self):
+        client = MQTTClient(self.client_id, self.mqtt_server, self.port, keepalive=self.keepalive)
+        client.set_callback(self.sub_cb)
+        client.connect()
+        self.logger.print('Connected to %s MQTT Broker'%(self.mqtt_server))
+        return client
+
+    # #reconnect & reset
+    def reconnect(self):
+        self.logger.print('Failed to connected to Broker. Reconnecting...')
+        time.sleep(1)
+        #machine.reset()
+
+    def sub_cb(self, topic, msg):
+        self.logger.print((topic.decode('utf-8'), msg.decode('utf-8')))
+        if self.callback:
+            self.callback(topic,msg)
+
+    def diconnect(self):
+        self.client.disconnect()
+
+    def publish(self,data,topic_pub=None):
+        if topic_pub:
+            self.client.publish(topic_pub,data)
+        else:
+            self.client.publish(self.topic_pub,data)
+
+    def subscribe(self,topic_sub=None,callback=None):
+        if topic_sub:
+            self.client.subscribe(topic_sub)
+        else:
+            self.client.subscribe(self.topic_sub)
+        self.callback=callback
+    
+    def update(self):
+        self.client.check_msg()
 # topic_msg = 'idk :('
 # data={
 #     'payload':{
@@ -17,32 +84,7 @@
 # }
 # topic_sub = 'Temp'
 
-# last_message = 0
-# message_interval = 5
-# counter = 0
-
-# def mqtt_connect():
-#     client = MQTTClient(client_id, mqtt_server, 3000, keepalive=60)
-#     client.set_callback(sub_cb)
-#     client.connect()
-#     print('Connected to %s MQTT Broker'%(mqtt_server))
-#     return client
-
-# #reconnect & reset
-# def reconnect():
-#     print('Failed to connected to Broker. Reconnecting...')
-#     time.sleep(5)
-#     machine.reset()
-
-# def sub_cb(topic, msg):
-#     print((topic.decode('utf-8'), msg.decode('utf-8')))
-    
 # def main():
-#     try:
-#         client=mqtt_connect()
-#     except OSError as e:
-#         reconnect()
-    
 #     while True:
 #         time.sleep(0.01)
 #         temp,hum=th06.GetTempHum()

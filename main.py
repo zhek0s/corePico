@@ -12,7 +12,6 @@ from core.StateMachine.configStates import ConfigStates
 from lib.th06 import TH06
 from lib.buttons import Buttons
 from lib.display import Display
-from umqtt.simple import MQTTClient
 
 sdaP=Pin(2)
 sclP=Pin(3)

@@ -4,7 +4,7 @@ class ConfigPico:
         "startUpState":"BootState" # type: ignore
     }
     ftpUpdate={
-        "ftpWork":True, # type: ignore
+        "ftpWork":False, # type: ignore
         "writeToServer":False, # type: ignore
         "writeToPico":False, # type: ignore
         "FTP_HOST":"192.168.0.120", # type: ignore
@@ -20,4 +20,12 @@ class ConfigPico:
     Network={
         "EthernetHostName":"EtherPico" # type: ignore
         }
-    
+    MQTT={
+        "mqttWork":True,
+        "mqtt_server":'192.168.0.120',
+        "port":1883,
+        "keepalive":60,
+        "client_id":'pico_with_temp',
+        "topic_pub":'mainController',
+        "topic_sub":'mainController'
+    }
