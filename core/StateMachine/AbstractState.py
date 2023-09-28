@@ -1,10 +1,11 @@
 import time
 from core.Debug import Debug
+from lib.display import Display
 
 class State:
     name="Abstract State"
-    logger=[]
-    display=[]
+    logger: Debug
+    display: Display
 
     deltaTime=0
     lastFPSGet=0

@@ -23,7 +23,9 @@ if __name__ == "__main__":
     ftpUpdater = FTPUpdater(nic,logger)
     ftpUpdater.writeToPico=True
     ftpUpdater.writeToServer=False
-    ftpUpdater.Update()
+    log=[]
+    ftpUpdater.Update(log)
+    print(log)
     time.sleep(5)
     machine.reset()
 

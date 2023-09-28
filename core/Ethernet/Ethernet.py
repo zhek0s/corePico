@@ -29,3 +29,6 @@ class Ethernet:
         
     def deactivate(self):
         self.nic.active(False)
+
+    def ifConfig(self):
+        return self.nic.ifconfig()
