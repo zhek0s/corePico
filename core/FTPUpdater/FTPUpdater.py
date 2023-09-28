@@ -1,20 +1,21 @@
 from config import ConfigPico
 from core.date import Date
+from core.Debug import Debug
 from core.Filesystem.Filesystem import Filesystem
 from lib.ftp import FTP
 
 CRLF = '\r\n'
 class FTPUpdater:
     
-    ftp=[]
+    ftp: FTP
     allfiles=list()
     alldir=list()
-    filesystem = []
+    filesystem: Filesystem
     forceUpdatePico=False
     forceUpdateServer=False
     writeToPico=True
     writeToServer=False
-    logger=[]
+    logger: Debug
     
     def __init__(self,nic,debugLogger):
         self.logger=debugLogger
@@ -140,10 +141,10 @@ class FTPUpdater:
         for file in fFtp:
             if((self.writeToPico) and (not (file["name"] in filesFtp))) or self.forceUpdatePico:
                 if(not (file["name"] in ConfigPico.ftpUpdate["ignoreFTPFiles"])):
-                   self.logger.log("Download file: "+file["path"]+"/"+file["name"])
-                   handle = self.filesystem.openBinaryFile(file["path"].rstrip("/") + "/" + file["name"].lstrip("/"), 'wb')
-                   self.ftp.cwd(file["path"])
-                   self.ftp.retrbinary('RETR %s' % file["name"], handle.write)
+                    self.logger.log("Download file: "+file["path"]+"/"+file["name"])
+                    handle = self.filesystem.openBinaryFile(file["path"].rstrip("/") + "/" + file["name"].lstrip("/"), 'wb')
+                    self.ftp.cwd(file["path"])
+                    self.ftp.retrbinary('RETR %s' % file["name"], handle.write)
                 else:
                     self.logger.log("Ignore ftp file:"+file["name"])
 
