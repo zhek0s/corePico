@@ -33,29 +33,13 @@ class FTPUpdater:
         else:
             self.logger.warning("FTPUpdater disabled in config.py!")
             
-    def Update(self,log,spLock=None):
-        if(spLock):
-            spLock.release()
-            log.append("Reading Server")
-            spLock.acquire()
+    def Update(self):
         self.logger.log("Reading files on server")
         self.getAllFiles()
-        if(spLock):
-            spLock.release()
-            log.append("Reading Pico")
-            spLock.acquire()
         self.logger.log("Reading files on pico")
         allLocalfiles,allLocaldir=self.filesystem.getLocalFilesystem()
-        if(spLock):
-            spLock.release()
-            log.append("Updating...")
-            spLock.acquire()
         self.logger.log("Finding difference and update")
         self.findDifferenceAndUpdate(self.allfiles,allLocalfiles,self.alldir,allLocaldir)
-        if(spLock):
-            spLock.release()
-            log.append("Done")
-            spLock.acquire()
         self.logger.log("FTPUpdater work done.")
         self.ftp.quit()
         

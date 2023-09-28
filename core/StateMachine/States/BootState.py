@@ -1,5 +1,4 @@
 import time
-import _thread
 import framebuf
 from machine import Timer
 from core.Debug import Debug
@@ -8,8 +7,6 @@ from core.StateMachine.AbstractState import State
 from core.StateMachine.commonUI import CommonUI
 from core.CoreVersion import Versions
 from core.Ethernet.Ethernet import Ethernet
-
-spLock=_thread.allocate_lock()
 
 class BootState(State):
 
@@ -32,7 +29,6 @@ class BootState(State):
     needDoneFTPUpdater=True
     isThreadRunningFTPUpdater=False
     logFTPUpdater=["Started"]
-    spLock=[]
 
     def __init__(self,display):
         super().__init__("BootState",display)
@@ -123,14 +119,11 @@ class BootState(State):
                 self.bootStageChanged=False
         else:
             if self.isInitFTPUpdater and self.needDoneFTPUpdater:
-                if not self.isThreadRunningFTPUpdater:
-                    _thread.start_new_thread(threadRunnerFTPUpdate,(self.logFTPUpdater,self.nic))
-                else:
-                    self.needIPEthernet=False
-                    stats=self.ethernet.ifConfig()
-                    self.logger.log(self.ethernet.ifConfig())
-                    self.drawingTextLine2=stats[0]
-                    self.tim = Timer(period=3000, mode=Timer.ONE_SHOT, callback=lambda t:self.stageChangerCallback(3))
+                self.needIPEthernet=False
+                stats=self.ethernet.ifConfig()
+                self.logger.log(self.ethernet.ifConfig())
+                self.drawingTextLine2=stats[0]
+                self.tim = Timer(period=3000, mode=Timer.ONE_SHOT, callback=lambda t:self.stageChangerCallback(3))
             else:
                 time.sleep_ms(1)
 
@@ -139,8 +132,6 @@ class BootState(State):
 
 def threadRunnerFTPUpdate(log,nic):
     #if ConfigPico.ftpUpdate["ftpWork"]:
-    global spLock
-    spLock.acquire()
     logger=Debug()
     logger.enablePrintConsole=True
     logger.logText="ftpUpdateRunner"
@@ -149,5 +140,4 @@ def threadRunnerFTPUpdate(log,nic):
     ftpUpdater = FTPUpdater(nic,logger)
     ftpUpdater.writeToPico=True
     ftpUpdater.writeToServer=False
-    ftpUpdater.Update(log)
-    spLock.release()
+    ftpUpdater.Update()
