@@ -13,7 +13,7 @@ class MQTTRunner:
     port=0
     keepalive=0
     last_message = 0
-    message_interval = 5
+    messageUpdateInterval = 500
     counter = 0
 
     topic_pub=""
@@ -33,7 +33,9 @@ class MQTTRunner:
         try:
             self.client=self.mqtt_connect()
         except OSError as e:
+            print(e)
             self.reconnect()
+        self.last_message=time.ticks_ms()
 
     def mqtt_connect(self):
         client = MQTTClient(self.client_id, self.mqtt_server, self.port, keepalive=self.keepalive)
@@ -70,7 +72,10 @@ class MQTTRunner:
         self.callback=callback
     
     def update(self):
-        self.client.check_msg()
+        if(time.ticks_diff(time.ticks_ms(), self.last_message)>self.messageUpdateInterval):
+            self.client.check_msg()
+            self.last_message=time.ticks_ms()
+
 # topic_msg = 'idk :('
 # data={
 #     'payload':{

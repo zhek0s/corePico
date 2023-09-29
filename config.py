@@ -21,11 +21,11 @@ class ConfigPico:
         "EthernetHostName":"EtherPico" # type: ignore
         }
     MQTT={
-        "mqttWork":True,
-        "mqtt_server":'192.168.0.120',
-        "port":1883,
-        "keepalive":60,
-        "client_id":'pico_with_temp',
-        "topic_pub":'mainController',
-        "topic_sub":'mainController'
+        "mqttWork":True, # type: ignore
+        "mqtt_server":'192.168.0.120', # type: ignore
+        "port":1883, # type: ignore
+        "keepalive":60, # type: ignore
+        "client_id":'pico_with_temp', # type: ignore
+        "topic_pub":'mainController', # type: ignore
+        "topic_sub":'mainController' # type: ignore
     }

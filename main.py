@@ -1,9 +1,6 @@
-import time
-import json
-from machine import Pin,SPI,I2C
+from machine import Pin,I2C
 from config import ConfigPico
 
-from core.Ethernet.Ethernet import Ethernet
 from core.StateMachine.StateMachineRunner import StateMachineRunner
 from core.Debug import Debug
 
@@ -36,6 +33,6 @@ stateMachine.setState(runState)
 def main():
     while True:
         stateMachine.Update()
-    
+
 if __name__ == "__main__":
     main()

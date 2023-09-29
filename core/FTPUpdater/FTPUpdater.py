@@ -106,10 +106,10 @@ class FTPUpdater:
                 if(file["name"]==fileL["name"]):
                     filesFtp.append(file["name"])
                     filesLocal.append(fileL["name"])
-                    dat={"hour":file["hour"],"minute":file["minute"],"year":file["year"],"month":file["month"],"date":file["day"]}
-                    datL={"hour":fileL["hour"],"minute":fileL["minute"],"year":fileL["year"],"month":fileL["month"],"date":fileL["day"]}
-                    if(Date.biggerDate(dat,datL) or self.forceUpdatePico):
-                        self.logger.log("NEED UPDATE FILE:"+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  >>  "+Date.niceDateFromDat(datL))
+                    dat={"hour":file["hour"],"minute":file["minute"],"year":file["year"],"month":file["month"],"date":file["day"]} # type: ignore
+                    datL={"hour":fileL["hour"],"minute":fileL["minute"],"year":fileL["year"],"month":fileL["month"],"date":fileL["day"]} # type: ignore
+                    if(Date.biggerDate(dat,datL) or self.forceUpdatePico): # type: ignore
+                        self.logger.log("NEED UPDATE FILE:"+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  >>  "+Date.niceDateFromDat(datL)) # type: ignore
                         if(not (file["name"] in ConfigPico.ftpUpdate["ignoreFTPFiles"])):
                             if(self.writeToPico):
                                 self.logger.log("Download file: "+file["path"]+"/"+file["name"])
@@ -122,7 +122,7 @@ class FTPUpdater:
                         else:
                             self.logger.log("Ignore ftp file:"+file["name"])
                     else:
-                        self.logger.log("File no need update: "+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  <<  "+Date.niceDateFromDat(datL))
+                        self.logger.log("File no need update: "+fileL["path"]+"/"+fileL["name"]+"   "+Date.niceDateFromDat(dat)+"  <<  "+Date.niceDateFromDat(datL)) # type: ignore
                         filesLocal.remove(file["name"])
                     
         for file in fFtp:

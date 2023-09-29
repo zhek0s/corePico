@@ -27,6 +27,7 @@ class BootState(State):
     isInitEthernet=False
     needIPEthernet=True
 
+    ftpUpdater: FTPUpdater
     isInitFTPUpdater=False
     needDoneFTPUpdater=ConfigPico.ftpUpdate["ftpWork"]
     logFTPUpdater=["Started"]
@@ -175,7 +176,7 @@ class BootState(State):
             self.logFTPUpdater.append("Done")
             self.Draw()
             self.ftpUpdater.ftp.quit()
-            self.ftpUpdater=[]
+            self.ftpUpdater=[] # type: ignore
             self.tim = Timer(period=3000, mode=Timer.ONE_SHOT, callback=lambda t:self.stageChangerCallback(4))
         self.ftpUpdaterStage+=1
 
@@ -205,5 +206,6 @@ class BootState(State):
         logger.warningText="MQTTRunner"
         logger.errorText="MQTTRunner"
         self.mqtt = MQTTRunner(logger)
-        self.mqtt.publish("hello")
+        self.mqtt.publish("Booted")
         self.mqtt.subscribe()
+        #######TODO add information about boot

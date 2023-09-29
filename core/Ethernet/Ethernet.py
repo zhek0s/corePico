@@ -16,19 +16,19 @@ class Ethernet:
         pinSS=configPin["pinSS"]
         pinReset=configPin["pinReset"]
         spi=SPI(spiNum,spiFreq, mosi=Pin(spiMosi),miso=Pin(spiMiso),sck=Pin(spiSck))
-        self.nic = network.WIZNET5K(spi,Pin(pinSS),Pin(pinReset))
+        self.nic = network.WIZNET5K(spi,Pin(pinSS),Pin(pinReset)) # type: ignore
         
     def getHandler(self):
         return self.nic
     
     def isConnected(self):
-        return self.nic.isconnected()
+        return self.nic.isconnected() # type: ignore
     
     def activate(self):
-        self.nic.active(True)
+        self.nic.active(True) # type: ignore
         
     def deactivate(self):
-        self.nic.active(False)
+        self.nic.active(False) # type: ignore
 
     def ifConfig(self):
-        return self.nic.ifconfig()
+        return self.nic.ifconfig() # type: ignore
