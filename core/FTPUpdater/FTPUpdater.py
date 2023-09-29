@@ -17,7 +17,7 @@ class FTPUpdater:
     writeToServer=False
     logger: Debug
     
-    def __init__(self,nic,debugLogger):
+    def __init__(self,nic,debugLogger,runFromUtil=False):
         self.logger=debugLogger
         self.filesystem=Filesystem(debugLogger)
         self.allfiles.clear()
@@ -29,7 +29,7 @@ class FTPUpdater:
         FTP_USER = ConfigPico.ftpUpdate["FTP_USER"]
         FTP_PASS = ConfigPico.ftpUpdate["FTP_PASS"]
         FTP_PORT = ConfigPico.ftpUpdate["FTP_PORT"]   
-        if ConfigPico.ftpUpdate["ftpWork"]:
+        if ConfigPico.ftpUpdate["ftpWork"] or runFromUtil:
             self.ftp = FTP(self.logger,FTP_HOST,FTP_PORT,FTP_USER,FTP_PASS,None,FTP.timeout,[nic.ifconfig()[0],""])
         else:
             self.logger.warning("FTPUpdater disabled in config.py!")

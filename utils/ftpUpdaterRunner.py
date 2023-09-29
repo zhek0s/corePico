@@ -12,15 +12,14 @@ if __name__ == "__main__":
     print('Start')
     print('Getting ip')
     nic.active(True) 
-    if ConfigPico.ftpUpdate["ftpWork"]:
-        time.sleep(3)
-        print(nic.ifconfig())
+    time.sleep(3)
+    print(nic.ifconfig())
     logger=Debug()
     logger.enablePrintConsole=True
     logger.logText="ftpUpdateRunner"
     logger.warningText="ftpUpdateRunner"
     logger.errorText="ftpUpdateRunner"
-    ftpUpdater = FTPUpdater(nic,logger)
+    ftpUpdater = FTPUpdater(nic,logger,runFromUtil=True)
     ftpUpdater.writeToPico=True
     ftpUpdater.writeToServer=False
     ftpUpdater.Update()
