@@ -3,14 +3,19 @@ import framebuf
 
 class Display(SSD1306_I2C):
     MAXIMUM_CHARS_ON_LINE=16
+    i2c=[]
 
     def __init__(self, i2cHandler):
         WIDTH  = 128
         HEIGHT = 64
-        super().__init__(WIDTH, HEIGHT, i2cHandler)
+        self.i2c=i2cHandler
+        super().__init__(WIDTH, HEIGHT, self.i2c)
 
     def getHandler(self):
         return self
+
+    def getI2C(self):
+        return self.i2c
 
     def textAligned(self,text,mod,x,y):
         #R(right),L(Left),C(Center),W(Width)

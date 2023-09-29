@@ -6,6 +6,7 @@ class State:
     name="Abstract State"
     logger: Debug
     display: Display
+    stateMachine=[]
 
     deltaTime=0
     lastFPSGet=0

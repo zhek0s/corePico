@@ -4,6 +4,7 @@ from core.StateMachine.AbstractState import State
 
 class StateMachineRunner:
     
+    StateMachineStates=[]
     logger=[]
     state=State("abstract",[])
     running=False

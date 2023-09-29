@@ -1,6 +1,5 @@
 from machine import Pin, I2C
 import time
-from picozero import Button
 
 class TH06:
 

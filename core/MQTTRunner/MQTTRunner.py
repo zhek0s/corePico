@@ -10,8 +10,8 @@ class MQTTRunner:
 
     mqtt_server=""
     client_id=""
-    port=0
-    keepalive=0
+    port=1883
+    keepalive=60
     last_message = 0
     messageUpdateInterval = 500
     counter = 0

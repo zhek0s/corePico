@@ -188,13 +188,14 @@ class BootState(State):
                 if self.needConnectMQTT:
                     self.tim = Timer(period=1000, mode=Timer.ONE_SHOT, callback=lambda t:self.initMQTT())
                 else:
-                    self.tim = Timer(period=2000, mode=Timer.ONE_SHOT, callback=lambda t:self.stageChangerCallback(5))
+                    self.tim = Timer(period=2000, mode=Timer.ONE_SHOT, callback=lambda t:self.moveToMenu())
                     self.drawingTextLine2="Aborted"
                 self.bootStageChanged=False
         else:
             if self.isInitMQTT and self.needConnectMQTT:
-                self.mqtt.update()
+                self.tim = Timer(period=2000, mode=Timer.ONE_SHOT, callback=lambda t:self.moveToMenu())
                 time.sleep_ms(10)
+                self.isInitMQTT=False
             else:
                 time.sleep_ms(1)
 
@@ -206,6 +207,13 @@ class BootState(State):
         logger.warningText="MQTTRunner"
         logger.errorText="MQTTRunner"
         self.mqtt = MQTTRunner(logger)
+        self.drawingTextLine2="Connected"
         self.mqtt.publish("Booted")
-        self.mqtt.subscribe()
+        #self.mqtt.subscribe()
         #######TODO add information about boot
+
+##########  menu Init
+    def moveToMenu(self): 
+        stateClass=self.stateMachine.StateMachineStates["MenuState"]
+        runState=stateClass(self.display,self.mqtt)
+        self.stateMachine.setState(runState)
